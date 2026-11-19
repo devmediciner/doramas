@@ -13,3 +13,4 @@ Interface web moderna para visualização, busca e reprodução do catálogo com
 - `index.html`: Interface visual responsiva em tema escuro.
 - `doramas.json`: Dados completos do catálogo estruturados em JSON.
 - `doramas_data.js`: Base de dados em JavaScript para execução local e web sem restrições de CORS.
+

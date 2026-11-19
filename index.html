@@ -3,104 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo de Doramas</title>
+  <title>DramiPlay - Catálogo Completo de Doramas</title>
+  <link rel="icon" href="https://www.dramiplay.com/favicon.png" type="image/png">
   <style>
     :root {
-      --bg: #0d0f15;
-      --card-bg: #161a23;
-      --card-hover: #212735;
-      --accent: #8b5cf6;
-      --accent-hover: #7c3aed;
+      --bg: #0b0d14;
+      --bg-surface: #121622;
+      --card-bg: #181d2c;
+      --card-hover: #22293d;
+      --accent: #9333ea;
+      --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
       --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --border: #282f40;
+      --text-muted: #94a3b8;
+      --border: #232a3d;
+      --badge-new: #10b981;
+      --badge-top: #f59e0b;
+      --badge-dub: #6366f1;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 60px;
+      overflow-x: hidden;
+      padding-bottom: 80px;
     }
 
-    /* Header */
+    /* Topo / Header */
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(13, 15, 21, 0.92);
-      backdrop-filter: blur(12px);
+      z-index: 100;
+      background: rgba(11, 13, 20, 0.95);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      padding: 12px 24px;
     }
 
-    .header-content {
-      max-width: 1400px;
+    .header-inner {
+      max-width: 1440px;
       margin: 0 auto;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
     }
 
-    .brand h1 {
-      font-size: 20px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
+    .brand-logo {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: var(--accent-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .badge-count {
-      background: #2a2245;
-      color: #c4b5fd;
-      font-size: 12px;
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid #4c1d95;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #eab308;
+      box-shadow: 0 0 8px #eab308;
+    }
+
+    .status-dot.online {
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .status-dot.offline {
+      background: #3b82f6;
+      box-shadow: 0 0 8px #3b82f6;
     }
 
     .search-box {
       flex: 1;
-      max-width: 480px;
+      max-width: 440px;
       position: relative;
     }
 
     .search-box input {
       width: 100%;
-      background: var(--card-bg);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       color: var(--text);
       padding: 10px 16px 10px 40px;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 14px;
       outline: none;
       transition: all 0.2s;
     }
 
     .search-box input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+      border-color: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
     }
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
@@ -109,53 +142,317 @@
       pointer-events: none;
     }
 
-    /* Container */
-    .main-container {
-      max-width: 1400px;
-      margin: 24px auto;
-      padding: 0 24px;
+    /* Barra de Categorias / Filtros Rápidos */
+    .filter-bar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
     }
 
-    /* Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border-color: #a855f7;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4);
+    }
+
+    /* Hero / Banner de Destaque */
+    .hero-section {
+      max-width: 1440px;
+      margin: 20px auto 0;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 400px;
+      display: flex;
+      align-items: flex-end;
+      background: #141824;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .hero-card {
+        min-height: 320px;
+      }
+    }
+
+    .hero-backdrop {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      filter: brightness(0.65);
+      transition: transform 0.6s ease;
+    }
+
+    .hero-card:hover .hero-backdrop {
+      transform: scale(1.02);
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, #0b0d14 0%, rgba(11, 13, 20, 0.75) 45%, rgba(11, 13, 20, 0.1) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 36px;
+      max-width: 680px;
     }
 
     @media (max-width: 640px) {
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
+      .hero-content {
+        padding: 20px;
       }
-      .main-container {
-        padding: 0 12px;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 22px;
       }
+    }
+
+    .hero-synopsis {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-play-hero {
+      background: #fff;
+      color: #0b0d14;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-play-hero:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-nav {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+    }
+
+    .hero-nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .hero-nav-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Container Principal */
+    .main-wrap {
+      max-width: 1440px;
+      margin: 30px auto 0;
+      padding: 0 24px;
+    }
+
+    @media (max-width: 640px) {
+      .main-wrap {
+        padding: 0 14px;
+      }
+    }
+
+    /* Seções / Fileiras (Rails) */
+    .rail-section {
+      margin-bottom: 40px;
+    }
+
+    .rail-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .rail-title {
+      font-size: 19px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rail-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .rail-nav {
+      display: flex;
+      gap: 6px;
+    }
+
+    .rail-nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .rail-nav-btn:hover {
+      background: var(--card-hover);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .rail-carousel {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #232a3d transparent;
+    }
+
+    .rail-carousel::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .rail-carousel::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
     }
 
     /* Card */
     .card {
+      flex: 0 0 170px;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       position: relative;
     }
 
+    @media (max-width: 640px) {
+      .card {
+        flex: 0 0 135px;
+      }
+    }
+
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6);
-      border-color: var(--accent);
+      transform: translateY(-5px);
+      border-color: #a855f7;
+      box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.7);
     }
 
     .card-thumb {
       width: 100%;
       aspect-ratio: 2 / 3;
-      background: #1e2433;
+      background: #141724;
       position: relative;
       overflow: hidden;
     }
@@ -165,17 +462,40 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.3s;
+      transition: transform 0.3s ease;
     }
 
     .card:hover .card-thumb img {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
+
+    .card-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-novo { background: var(--badge-new); color: #fff; }
+    .badge-top { background: var(--badge-top); color: #000; }
+    .badge-dub { background: var(--badge-dub); color: #fff; }
 
     .play-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -187,37 +507,37 @@
       opacity: 1;
     }
 
-    .play-btn-circle {
+    .play-circle {
       width: 44px;
       height: 44px;
       border-radius: 50%;
       background: var(--accent);
-      color: white;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 14px rgba(147, 51, 234, 0.6);
     }
 
-    .play-btn-circle svg {
-      width: 20px;
-      height: 20px;
+    .play-circle svg {
+      width: 18px;
+      height: 18px;
       margin-left: 2px;
       fill: currentColor;
     }
 
     .card-body {
-      padding: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       flex: 1;
     }
 
     .card-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
+      line-height: 1.35;
       color: #fff;
-      line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -225,29 +545,41 @@
       margin-bottom: 6px;
     }
 
-    .card-meta {
+    .card-sub {
       font-size: 11px;
       color: var(--text-muted);
       margin-top: auto;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
     }
 
-    .badge-ep {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10px;
+    /* Modo Grade (quando busca ou clica em filtro específico) */
+    .grid-view {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+      }
+    }
+
+    .grid-view .card {
+      flex: none;
     }
 
     /* Modal Player */
     .modal {
       position: fixed;
       inset: 0;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -258,25 +590,25 @@
       display: flex;
     }
 
-    .modal-content {
-      background: var(--card-bg);
+    .modal-box {
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       width: 100%;
-      max-width: 900px;
-      max-height: 90vh;
+      max-width: 940px;
+      max-height: 92vh;
       overflow-y: auto;
       position: relative;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
     }
 
     .modal-close {
       position: absolute;
       top: 14px;
       right: 14px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--border);
       color: #fff;
       width: 36px;
@@ -287,7 +619,7 @@
       justify-content: center;
       cursor: pointer;
       z-index: 10;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .modal-close:hover {
@@ -317,38 +649,28 @@
       border: none;
     }
 
-    .modal-info {
-      padding: 20px;
+    .modal-body {
+      padding: 22px;
     }
 
     .modal-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .modal-genres {
+    .modal-badges {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .genre-tag {
-      background: rgba(139, 92, 246, 0.15);
-      color: #c4b5fd;
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 500;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
     }
 
     .modal-synopsis {
-      font-size: 13px;
-      color: var(--text-muted);
+      font-size: 13.5px;
+      color: #cbd5e1;
       line-height: 1.6;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .modal-actions {
@@ -358,87 +680,148 @@
     }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
       border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      text-decoration: none;
     }
 
-    .btn-primary {
+    .btn-accent {
       background: var(--accent);
       color: #fff;
     }
 
-    .btn-primary:hover {
-      background: var(--accent-hover);
+    .btn-accent:hover {
+      background: #7e22ce;
     }
 
-    .btn-secondary {
+    .btn-sec {
       background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
+      color: #fff;
       border: 1px solid var(--border);
     }
 
-    .btn-secondary:hover {
+    .btn-sec:hover {
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      font-size: 15px;
+    /* Notificação Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
 
+  <!-- Topo -->
   <header>
-    <div class="header-content">
-      <div class="brand">
-        <h1>Catálogo de Doramas</h1>
-        <span class="badge-count" id="badge-count">Carregando...</span>
-      </div>
+    <div class="header-inner">
+      <a href="#" class="brand" onclick="mostrarInicio(); return false;">
+        <span class="brand-logo">🎬 DRAMI<i>PLAY</i></span>
+      </a>
 
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="search-input" placeholder="Pesquisar por título ou gênero...">
+        <input type="text" id="search-input" placeholder="Pesquisar por título, gênero ou sinopse...">
+      </div>
+
+      <div class="status-pill" id="status-pill" title="Status da Fonte de Dados">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Conectando...</span>
       </div>
     </div>
   </header>
 
-  <main class="main-container">
-    <div class="grid" id="doramas-grid"></div>
-    <div class="empty-state" id="empty-state" style="display: none;">
-      Nenhum dorama encontrado para sua busca.
+  <!-- Filtros / Abas no topo -->
+  <nav class="filter-bar">
+    <div class="filter-inner" id="filter-container">
+      <button class="filter-btn active" data-filter="all">🏠 Início</button>
+      <button class="filter-btn" data-filter="novos">🆕 Novos</button>
+      <button class="filter-btn" data-filter="mais_assistido">🔥 Mais Assistidos</button>
+      <button class="filter-btn" data-filter="destaque">⭐ Destaques</button>
+      <button class="filter-btn" data-filter="dublado">🎙️ Dublados</button>
+      <button class="filter-btn" data-filter="Romance">💕 Romance</button>
+      <button class="filter-btn" data-filter="Ação">⚔️ Ação</button>
+      <button class="filter-btn" data-filter="Traição e Vingança">💔 Traição & Vingança</button>
+      <button class="filter-btn" data-filter="Histórico">👑 Histórico</button>
+      <button class="filter-btn" data-filter="Herdeira e Riqueza">💎 Herdeira & Riqueza</button>
     </div>
+  </nav>
+
+  <!-- Hero Banner Rotativo -->
+  <div class="hero-section" id="hero-wrap">
+    <div class="hero-card" id="hero-card">
+      <img class="hero-backdrop" id="hero-backdrop" src="" alt="Destaque">
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <div class="hero-badges" id="hero-badges"></div>
+        <h1 class="hero-title" id="hero-title">Carregando catálogo...</h1>
+        <p class="hero-synopsis" id="hero-synopsis">Buscando os doramas disponíveis...</p>
+        <div class="hero-actions">
+          <button class="btn-play-hero" id="hero-play-btn">
+            ▶ Assistir Agora
+          </button>
+        </div>
+      </div>
+      <div class="hero-nav">
+        <button class="hero-nav-btn" onclick="prevHeroSlide()" title="Anterior">❮</button>
+        <button class="hero-nav-btn" onclick="nextHeroSlide()" title="Próximo">❯</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-wrap">
+    <!-- Visualização em Fileiras (Rails) -->
+    <div id="rails-container"></div>
+
+    <!-- Visualização em Grade (Busca ou Categoria Específica) -->
+    <div id="grid-container" class="grid-view"></div>
   </main>
 
   <!-- Modal Player -->
   <div class="modal" id="video-modal">
-    <div class="modal-content">
+    <div class="modal-box">
       <button class="modal-close" id="modal-close" title="Fechar">✕</button>
       <div class="player-wrap" id="player-container"></div>
-      <div class="modal-info">
+      <div class="modal-body">
         <h2 class="modal-title" id="modal-title">Título</h2>
-        <div class="modal-genres" id="modal-genres"></div>
+        <div class="modal-badges" id="modal-badges"></div>
         <p class="modal-synopsis" id="modal-synopsis">Sinopse...</p>
         <div class="modal-actions">
-          <button class="btn btn-primary" id="btn-copy-link">
+          <button class="btn btn-accent" id="btn-copy-url">
             📋 Copiar Link do Vídeo
           </button>
-          <a class="btn btn-secondary" id="btn-direct-link" target="_blank" rel="noopener">
+          <a class="btn btn-sec" id="btn-open-tab" target="_blank" rel="noopener">
             ↗ Abrir em Nova Aba
           </a>
         </div>
@@ -446,170 +829,480 @@
     </div>
   </div>
 
-  <!-- Carrega os dados -->
+  <div class="toast" id="toast">Link copiado com sucesso!</div>
+
+  <!-- Script com banco de dados de backup local (doramas_data.js) -->
   <script src="doramas_data.js"></script>
+
   <script>
-    let doramas = window.DORAMAS || [];
-    let filteredDoramas = doramas;
-    let renderedCount = 0;
-    const CHUNK_SIZE = 48;
+    /* =====================================================================
+       CONFIGURAÇÃO DA API SUPABASE (ONLINE) COM FALLBACK OFFLINE LOCAL
+       ===================================================================== */
+    const SB_API_URL = 'https://uqzbjasxcwetrfknagma.supabase.co/rest/v1/doramas?order=criado_em.desc&select=*&limit=1000&offset=0';
+    const SB_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxemJqYXN4Y3dldHJma25hZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzODM0NzgsImV4cCI6MjA5MTk1OTQ3OH0.8TPHn_DjxLK6h9v8V9yXhr0JdSMz2_yG_C6CHbzcyDU';
 
-    const grid = document.getElementById('doramas-grid');
+    let CATALOGO = [];
+    let destaquesList = [];
+    let heroIndex = 0;
+    let heroTimer = null;
+    let filtroAtual = 'all';
+
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+    const railsContainer = document.getElementById('rails-container');
+    const gridContainer = document.getElementById('grid-container');
     const searchInput = document.getElementById('search-input');
-    const badgeCount = document.getElementById('badge-count');
-    const emptyState = document.getElementById('empty-state');
+    const heroWrap = document.getElementById('hero-wrap');
 
-    const modal = document.getElementById('video-modal');
-    const modalClose = document.getElementById('modal-close');
-    const playerContainer = document.getElementById('player-container');
-    const modalTitle = document.getElementById('modal-title');
-    const modalGenres = document.getElementById('modal-genres');
-    const modalSynopsis = document.getElementById('modal-synopsis');
-    const btnCopyLink = document.getElementById('btn-copy-link');
-    const btnDirectLink = document.getElementById('btn-direct-link');
+    // Inicialização da Aplicação
+    async function init() {
+      setupEvents();
+      await carregarDados();
+    }
 
-    // Inicialização
-    function init() {
-      updateBadge();
-      renderMore();
+    // Carregamento inteligente: Tenta a API ao vivo, com fallback no backup local
+    async function carregarDados() {
+      let carregadoOnline = false;
 
+      try {
+        statusText.textContent = 'Buscando API...';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+
+        const response = await fetch(SB_API_URL, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SB_API_KEY,
+            'Authorization': `Bearer ${SB_API_KEY}`
+          },
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const dados = await response.json();
+          if (Array.isArray(dados) && dados.length > 0) {
+            CATALOGO = dados;
+            carregadoOnline = true;
+            statusDot.className = 'status-dot online';
+            statusText.textContent = `🟢 Ao Vivo (${CATALOGO.length} títulos)`;
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao conectar na API ao vivo:', err);
+      }
+
+      // Se a API estiver offline ou der erro, usa o backup local salvo (doramas_data.js)
+      if (!carregadoOnline) {
+        if (window.DORAMAS && Array.isArray(window.DORAMAS) && window.DORAMAS.length > 0) {
+          CATALOGO = window.DORAMAS;
+          statusDot.className = 'status-dot offline';
+          statusText.textContent = `💾 Backup Offline (${CATALOGO.length.toLocaleString('pt-BR')} títulos)`;
+        } else {
+          statusDot.className = 'status-dot';
+          statusText.textContent = '❌ Dados não encontrados';
+          return;
+        }
+      }
+
+      // Prepara os destaques para o Hero Banner
+      destaquesList = CATALOGO.filter(d => d.destaque && (d.banner_url || d.poster_url));
+      if (!destaquesList.length) {
+        destaquesList = CATALOGO.slice(0, 10);
+      }
+
+      montarHero();
+      montarSecoesRails();
+    }
+
+    /* =====================================================================
+       HERO BANNER
+       ===================================================================== */
+    function montarHero() {
+      if (!destaquesList.length) {
+        heroWrap.style.display = 'none';
+        return;
+      }
+      renderHeroSlide(heroIndex);
+      iniciarHeroAutoPlay();
+    }
+
+    function renderHeroSlide(idx) {
+      const d = destaquesList[idx];
+      if (!d) return;
+
+      const imgUrl = d.banner_url || d.poster_url || '';
+      document.getElementById('hero-backdrop').src = imgUrl;
+      document.getElementById('hero-title').textContent = d.titulo;
+      document.getElementById('hero-synopsis').textContent = d.sinopse || 'Assista a este título completo com a melhor qualidade.';
+
+      // Badges
+      const badgesEl = document.getElementById('hero-badges');
+      let badgesHtml = '<span class="badge" style="background:var(--accent);color:#fff">EM ALTA</span>';
+      if (d.novo) badgesHtml += '<span class="badge badge-novo">NOVO</span>';
+      if (d.mais_assistido) badgesHtml += '<span class="badge badge-top">MAIS ASSISTIDO</span>';
+      if (d.tipo === 'dub') badgesHtml += '<span class="badge badge-dub">DUBLADO</span>';
+      badgesEl.innerHTML = badgesHtml;
+
+      document.getElementById('hero-play-btn').onclick = () => abrirPlayer(d);
+    }
+
+    function nextHeroSlide() {
+      heroIndex = (heroIndex + 1) % destaquesList.length;
+      renderHeroSlide(heroIndex);
+    }
+
+    function prevHeroSlide() {
+      heroIndex = (heroIndex - 1 + destaquesList.length) % destaquesList.length;
+      renderHeroSlide(heroIndex);
+    }
+
+    function iniciarHeroAutoPlay() {
+      if (heroTimer) clearInterval(heroTimer);
+      heroTimer = setInterval(() => nextHeroSlide(), 7000);
+    }
+
+    /* =====================================================================
+       SEÇÕES EM FILEIRAS (RAILS)
+       ===================================================================== */
+    function montarSecoesRails() {
+      railsContainer.innerHTML = '';
+
+      // Definição das seções organizadas
+      const secoes = [
+        {
+          id: 'novos',
+          titulo: 'Novos Lançamentos',
+          icone: '🆕',
+          itens: CATALOGO.filter(d => d.novo).slice(0, 30)
+        },
+        {
+          id: 'mais_assistidos',
+          titulo: 'Mais Assistidos',
+          icone: '🔥',
+          itens: CATALOGO.filter(d => d.mais_assistido).slice(0, 30)
+        },
+        {
+          id: 'destaques',
+          titulo: 'Destaques Imperdíveis',
+          icone: '⭐',
+          itens: CATALOGO.filter(d => d.destaque).slice(0, 30)
+        },
+        {
+          id: 'dublados',
+          titulo: 'Dublados em Português',
+          icone: '🎙️',
+          itens: CATALOGO.filter(d => d.tipo === 'dub').slice(0, 30)
+        },
+        {
+          id: 'romance',
+          titulo: 'Romance Apaixonante',
+          icone: '💕',
+          itens: CATALOGO.filter(d => temGenero(d, 'Romance')).slice(0, 30)
+        },
+        {
+          id: 'acao',
+          titulo: 'Ação e Tiroteio',
+          icone: '⚔️',
+          itens: CATALOGO.filter(d => temGenero(d, 'Ação')).slice(0, 30)
+        },
+        {
+          id: 'traicao',
+          titulo: 'Traição e Vingança',
+          icone: '💔',
+          itens: CATALOGO.filter(d => temGenero(d, 'Traição') || temGenero(d, 'Vingança')).slice(0, 30)
+        },
+        {
+          id: 'riqueza',
+          titulo: 'Herdeira e Riqueza',
+          icone: '💎',
+          itens: CATALOGO.filter(d => temGenero(d, 'Riqueza') || temGenero(d, 'Bilionário') || temGenero(d, 'Herdeira')).slice(0, 30)
+        },
+        {
+          id: 'historico',
+          titulo: 'Histórico & Épico',
+          icone: '👑',
+          itens: CATALOGO.filter(d => temGenero(d, 'Histórico') || temGenero(d, 'Imperador')).slice(0, 30)
+        }
+      ];
+
+      secoes.forEach(sec => {
+        if (!sec.itens.length) return;
+
+        const secEl = document.createElement('section');
+        secEl.className = 'rail-section';
+
+        secEl.innerHTML = `
+          <div class="rail-head">
+            <h2 class="rail-title">
+              <span>${sec.icone}</span> ${sec.titulo}
+              <span class="rail-count">(${sec.itens.length})</span>
+            </h2>
+            <div class="rail-nav">
+              <button class="rail-nav-btn" onclick="scrollRail('${sec.id}', -400)" title="Rolar Esquerda">❮</button>
+              <button class="rail-nav-btn" onclick="scrollRail('${sec.id}', 400)" title="Rolar Direita">❯</button>
+            </div>
+          </div>
+          <div class="rail-carousel" id="rail-${sec.id}"></div>
+        `;
+
+        const carousel = secEl.querySelector(`#rail-${sec.id}`);
+        sec.itens.forEach(d => {
+          carousel.appendChild(criarCard(d));
+        });
+
+        railsContainer.appendChild(secEl);
+      });
+    }
+
+    function scrollRail(id, offset) {
+      const el = document.getElementById(`rail-${id}`);
+      if (el) el.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+
+    function temGenero(dorama, nome) {
+      if (!dorama.generos) return false;
+      const gList = Array.isArray(dorama.generos) ? dorama.generos : [dorama.generos];
+      return gList.some(g => String(g).toLowerCase().includes(nome.toLowerCase()));
+    }
+
+    /* =====================================================================
+       CRIAÇÃO DE CARD
+       ===================================================================== */
+    function criarCard(d) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.title = d.titulo;
+
+      const poster = d.poster_url || d.banner_url || 'https://via.placeholder.com/300x450/141724/ffffff?text=Sem+Capa';
+      const genero = d.generos && d.generos.length ? d.generos[0] : (d.tipo === 'dub' ? 'Dublado' : 'Dorama');
+
+      let badgesHtml = '';
+      if (d.novo) badgesHtml += '<span class="badge badge-novo">NOVO</span>';
+      if (d.mais_assistido) badgesHtml += '<span class="badge badge-top">TOP</span>';
+      if (d.tipo === 'dub') badgesHtml += '<span class="badge badge-dub">DUB</span>';
+
+      card.innerHTML = `
+        <div class="card-thumb">
+          <div class="card-badges">${badgesHtml}</div>
+          <img src="${poster}" alt="${escapeHtml(d.titulo)}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/141724/ffffff?text=Sem+Capa'">
+          <div class="play-overlay">
+            <div class="play-circle">
+              <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${escapeHtml(d.titulo)}</div>
+          <div class="card-sub">
+            <span>${escapeHtml(genero)}</span>
+            ${d.episodios ? `<span>${d.episodios} ep${d.episodios > 1 ? 's' : ''}</span>` : ''}
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => abrirPlayer(d));
+      return card;
+    }
+
+    /* =====================================================================
+       FILTROS E BUSCA
+       ===================================================================== */
+    function setupEvents() {
+      // Abas de filtro
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          aplicarFiltro(btn.dataset.filter);
+        });
+      });
+
+      // Busca em tempo real
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         if (!query) {
-          filteredDoramas = doramas;
-        } else {
-          filteredDoramas = doramas.filter(d => 
-            (d.titulo && d.titulo.toLowerCase().includes(query)) ||
-            (d.generos && d.generos.some(g => g.toLowerCase().includes(query)))
-          );
+          if (filtroAtual === 'all') {
+            mostrarInicio();
+          } else {
+            aplicarFiltro(filtroAtual);
+          }
+          return;
         }
-        grid.innerHTML = '';
-        renderedCount = 0;
-        updateBadge();
-        renderMore();
+
+        const resultados = CATALOGO.filter(d => 
+          (d.titulo && d.titulo.toLowerCase().includes(query)) ||
+          (d.sinopse && d.sinopse.toLowerCase().includes(query)) ||
+          (d.generos && d.generos.some(g => String(g).toLowerCase().includes(query)))
+        );
+
+        exibirGrade(resultados, `Resultados para "${query}" (${resultados.length})`);
       });
 
-      // Infinite Scroll
-      window.addEventListener('scroll', () => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-          renderMore();
-        }
-      });
-
-      // Fechar modal
-      modalClose.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
+      // Modal
+      document.getElementById('modal-close').addEventListener('click', fecharPlayer);
+      document.getElementById('video-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'video-modal') fecharPlayer();
       });
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape') fecharPlayer();
       });
     }
 
-    function updateBadge() {
-      badgeCount.textContent = `${filteredDoramas.length.toLocaleString('pt-BR')} doramas`;
-      emptyState.style.display = filteredDoramas.length === 0 ? 'block' : 'none';
-    }
-
-    function renderMore() {
-      if (renderedCount >= filteredDoramas.length) return;
-
-      const nextChunk = filteredDoramas.slice(renderedCount, renderedCount + CHUNK_SIZE);
-      const fragment = document.createDocumentFragment();
-
-      nextChunk.forEach(d => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.title = d.titulo;
-
-        const poster = d.poster_url || d.banner_url || 'https://via.placeholder.com/300x450/1e2433/ffffff?text=Sem+Capa';
-        const generos = d.generos && d.generos.length ? d.generos[0] : 'Dorama';
-
-        card.innerHTML = `
-          <div class="card-thumb">
-            <img src="${poster}" alt="${escapeHtml(d.titulo)}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/1e2433/ffffff?text=Sem+Capa'">
-            <div class="play-overlay">
-              <div class="play-btn-circle">
-                <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">${escapeHtml(d.titulo)}</div>
-            <div class="card-meta">
-              <span>${escapeHtml(generos)}</span>
-              ${d.episodios ? `<span class="badge-ep">${d.episodios} ep${d.episodios > 1 ? 's' : ''}</span>` : ''}
-            </div>
-          </div>
-        `;
-
-        card.addEventListener('click', () => openPlayer(d));
-        fragment.appendChild(card);
+    function mostrarInicio() {
+      filtroAtual = 'all';
+      searchInput.value = '';
+      heroWrap.style.display = 'block';
+      railsContainer.style.display = 'block';
+      gridContainer.style.display = 'none';
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === 'all');
       });
-
-      grid.appendChild(fragment);
-      renderedCount += nextChunk.length;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function openPlayer(dorama) {
-      modalTitle.textContent = dorama.titulo;
-      modalSynopsis.textContent = dorama.sinopse || 'Sem sinopse disponível.';
+    function aplicarFiltro(tipo) {
+      filtroAtual = tipo;
+      searchInput.value = '';
 
-      // Gêneros
-      modalGenres.innerHTML = (dorama.generos || []).map(g => 
-        `<span class="genre-tag">${escapeHtml(g)}</span>`
-      ).join('');
-
-      // Player
-      let videoUrl = dorama.link_video;
-      if (!videoUrl && dorama.bunny_video_id) {
-        videoUrl = `https://iframe.mediadelivery.net/embed/${dorama.bunny_library_id || '653983'}/${dorama.bunny_video_id}`;
+      if (tipo === 'all') {
+        mostrarInicio();
+        return;
       }
 
-      if (videoUrl) {
-        if (videoUrl.endsWith('.mp4')) {
-          playerContainer.innerHTML = `<video controls autoplay src="${videoUrl}"></video>`;
-        } else {
-          playerContainer.innerHTML = `<iframe src="${videoUrl}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      let lista = [];
+      let tituloSecao = '';
+
+      if (tipo === 'novos') {
+        lista = CATALOGO.filter(d => d.novo);
+        tituloSecao = 'Novos Lançamentos';
+      } else if (tipo === 'mais_assistido') {
+        lista = CATALOGO.filter(d => d.mais_assistido);
+        tituloSecao = 'Mais Assistidos';
+      } else if (tipo === 'destaque') {
+        lista = CATALOGO.filter(d => d.destaque);
+        tituloSecao = 'Destaques';
+      } else if (tipo === 'dublado') {
+        lista = CATALOGO.filter(d => d.tipo === 'dub');
+        tituloSecao = 'Doramas Dublados';
+      } else {
+        lista = CATALOGO.filter(d => temGenero(d, tipo));
+        tituloSecao = `Gênero: ${tipo}`;
+      }
+
+      exibirGrade(lista, `${tituloSecao} (${lista.length.toLocaleString('pt-BR')})`);
+    }
+
+    function exibirGrade(itens, titulo) {
+      heroWrap.style.display = 'none';
+      railsContainer.style.display = 'none';
+      gridContainer.style.display = 'grid';
+      gridContainer.innerHTML = '';
+
+      if (!itens.length) {
+        gridContainer.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text-muted)">Nenhum dorama encontrado.</div>';
+        return;
+      }
+
+      // Renderiza os primeiros 60 e pagina o restante conforme scroll
+      const CHUNK = 60;
+      let renderizados = 0;
+
+      function renderMais() {
+        const proximo = itens.slice(renderizados, renderizados + CHUNK);
+        const frag = document.createDocumentFragment();
+        proximo.forEach(d => frag.appendChild(criarCard(d)));
+        gridContainer.appendChild(frag);
+        renderizados += proximo.length;
+      }
+
+      renderMais();
+
+      window.onscroll = () => {
+        if (gridContainer.style.display === 'grid' && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 600) {
+          if (renderizados < itens.length) renderMais();
         }
-        btnDirectLink.href = videoUrl;
-        btnDirectLink.style.display = 'inline-flex';
-        btnCopyLink.style.display = 'inline-flex';
-        btnCopyLink.onclick = () => {
-          navigator.clipboard.writeText(videoUrl).then(() => {
-            btnCopyLink.textContent = '✓ Link Copiado!';
-            setTimeout(() => { btnCopyLink.textContent = '📋 Copiar Link do Vídeo'; }, 2000);
-          });
+      };
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =====================================================================
+       PLAYER DE VÍDEO NO MODAL
+       ===================================================================== */
+    function abrirPlayer(d) {
+      const modal = document.getElementById('video-modal');
+      const playerBox = document.getElementById('player-container');
+      const titleEl = document.getElementById('modal-title');
+      const badgesEl = document.getElementById('modal-badges');
+      const synEl = document.getElementById('modal-synopsis');
+      const btnCopy = document.getElementById('btn-copy-url');
+      const btnTab = document.getElementById('btn-open-tab');
+
+      titleEl.textContent = d.titulo;
+      synEl.textContent = d.sinopse || 'Sem sinopse disponível.';
+
+      // Badges
+      let bHtml = '';
+      if (d.tipo === 'dub') bHtml += '<span class="badge badge-dub">DUBLADO</span>';
+      if (d.novo) bHtml += '<span class="badge badge-novo">NOVO</span>';
+      if (d.generos && d.generos.length) {
+        d.generos.forEach(g => {
+          bHtml += `<span class="badge" style="background:rgba(255,255,255,0.08);color:var(--text)">${escapeHtml(g)}</span>`;
+        });
+      }
+      badgesEl.innerHTML = bHtml;
+
+      // Link do vídeo
+      let streamUrl = d.link_video;
+      if (!streamUrl && d.bunny_video_id) {
+        streamUrl = `https://iframe.mediadelivery.net/embed/${d.bunny_library_id || '653983'}/${d.bunny_video_id}`;
+      }
+
+      if (streamUrl) {
+        if (streamUrl.endsWith('.mp4')) {
+          playerBox.innerHTML = `<video controls autoplay src="${streamUrl}" style="width:100%;height:100%"></video>`;
+        } else {
+          playerBox.innerHTML = `<iframe src="${streamUrl}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        }
+        btnTab.href = streamUrl;
+        btnTab.style.display = 'inline-flex';
+        btnCopy.style.display = 'inline-flex';
+        btnCopy.onclick = () => {
+          navigator.clipboard.writeText(streamUrl).then(() => mostrarToast('Link do vídeo copiado!'));
         };
       } else {
-        playerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9ca3af;">Vídeo não disponível.</div>';
-        btnDirectLink.style.display = 'none';
-        btnCopyLink.style.display = 'none';
+        playerBox.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted)">Vídeo em breve.</div>';
+        btnTab.style.display = 'none';
+        btnCopy.style.display = 'none';
       }
 
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeModal() {
+    function fecharPlayer() {
+      const modal = document.getElementById('video-modal');
       modal.classList.remove('active');
-      playerContainer.innerHTML = '';
+      document.getElementById('player-container').innerHTML = '';
       document.body.style.overflow = '';
     }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    function mostrarToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    // Inicia a aplicação
+    function escapeHtml(t) {
+      if (!t) return '';
+      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // Inicia tudo
     init();
   </script>
 </body>
 </html>
-
